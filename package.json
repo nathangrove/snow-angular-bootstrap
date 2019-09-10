@@ -1,6 +1,6 @@
 {
-  "name": "ng-snow",
-  "version": "0.0.0",
+  "name": "snow-angular-bootstrap",
+  "version": "2.0.0",
   "scripts": {
     "ng": "ng",
     "build": "ng build --prod",
