@@ -15,14 +15,24 @@ import {Observable} from 'rxjs/Observable';
 
 @Injectable()
 export class SnowInterceptor implements HttpInterceptor {
+
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+
     if (/^\/api/.test(req.url)) {
+
       let token = document.getElementsByTagName("app-root")[0].getAttribute("token");
+      if (!token) return next.handle(req);
+      
       let changedReq;
+
       if (typeof token !== 'undefined' && token !== '') {
+
         changedReq = req.clone({headers: req.headers.set('X-UserToken', token )});
+
       } else { changedReq = req; }
+
       return next.handle(changedReq);
+
     } else {
       return next.handle(req);
     }
