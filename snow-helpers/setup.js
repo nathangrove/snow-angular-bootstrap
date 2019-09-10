@@ -293,7 +293,7 @@ function create_files(){
     table: "sys_ui_page",
     body: {
       direct: "true",
-      description: "Index page of the angular2 SAP.",
+      description: "Index page of the angular SPA.",
       sys_class_name: "sys_ui_page",
       sys_package: config.application.sys_id,
       name: 'index',
@@ -345,6 +345,20 @@ function create_files(){
       sys_scope: config.application.sys_id
     }
   },{
+    table: "sys_ui_script",
+    body: {
+      active: "true",
+      use_scoped_format: "true",
+      global: "false",
+      script_name: "polyfills-es5",
+      script: "",
+      sys_class_name: "sys_ui_script",
+      sys_package: config.application.sys_id,
+      name: config.application.scope + ".polyfills-es5",
+      sys_name: config.application.scope + ".polyfills-es5",
+      sys_scope: config.application.sys_id
+    }
+  },{
     table: "content_css",
     body: {
       type: "local",
@@ -387,12 +401,13 @@ function create_files(){
           console.log("Success creating file: " + file.body.name + " of type " + file.body.sys_class_name);
           var record = JSON.parse(rawData).result;
 
-          if (file.body.name == 'index')                                  config.files.html['index'] = record.sys_id;
-          if (file.body.name == 'index')                                  config.snow.endpoint = record.endpoint;
-          if (file.body.name == config.application.scope + '.main')      config.files.js['main'] = record.sys_id;
-          if (file.body.name == config.application.scope + '.runtime')    config.files.js['runtime'] = record.sys_id;
-          if (file.body.name == config.application.scope + '.polyfills') config.files.js['polyfills'] = record.sys_id;
-          if (file.body.name == 'styles')                                 config.files.css['styles'] = record.sys_id;
+          if (file.body.name == 'index')                                     config.files.html['index'] = record.sys_id;
+          if (file.body.name == 'index')                                     config.snow.endpoint = record.endpoint;
+          if (file.body.name == config.application.scope + '.main')          config.files.js['main'] = record.sys_id;
+          if (file.body.name == config.application.scope + '.runtime')       config.files.js['runtime'] = record.sys_id;
+          if (file.body.name == config.application.scope + '.polyfills')     config.files.js['polyfills'] = record.sys_id;
+          if (file.body.name == config.application.scope + '.polyfills-es5') config.files.js['polyfills-es5'] = record.sys_id;
+          if (file.body.name == 'styles')                                    config.files.css['styles'] = record.sys_id;
 
           responses++;
 

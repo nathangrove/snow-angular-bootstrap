@@ -1,6 +1,8 @@
 var fs = require('fs');
 var http = require('https');
 
+var ngConfig = JSON.parse(fs.readFileSync('./angular.json'));
+
 // get the configuration file...
 var config = JSON.parse(fs.readFileSync('./snow.conf.json'));
 
@@ -22,8 +24,8 @@ if (config.snow.instance == '' || config.snow.auth == ''){
 var md5s = {};
 
 var indexFile;
-
-fs.readdir("./dist",function(err,files){
+var path = ngConfig.projects['snow-angular-bootstrap'].architect.build.options.outputPath;
+fs.readdir(path,function(err,files){
 
   for (var i=0; i < files.length; i++){
     var file = files[i]; 
@@ -37,9 +39,14 @@ fs.readdir("./dist",function(err,files){
       upload_file(file,'sys_ui_script',config.files.js.main);
       if (Object.keys(md5s).length == 4 && indexFile) upload_file(indexFile,'sys_ui_page',config.files.html.index);
 
-    } else if (match = file.match(/^polyfills\.([0-9a-f]+)\.js$/)){
+    } else if (match = file.match(/^polyfills\.([0-9a-f]+).js$/)){
       md5s.polyfills = match[1];
       upload_file(file,'sys_ui_script',config.files.js.polyfills);
+      if (Object.keys(md5s).length == 4 && indexFile) upload_file(indexFile,'sys_ui_page',config.files.html.index);
+    
+    } else if (match = file.match(/^polyfills-es5\.([0-9a-f]+).js$/)){
+      md5s.polyfills = match[1];
+      upload_file(file,'sys_ui_script',config.files.js['polyfills-es5']);
       if (Object.keys(md5s).length == 4 && indexFile) upload_file(indexFile,'sys_ui_page',config.files.html.index);
     
     } else if (match = file.match(/^runtime\.([0-9a-f]+)\.js$/)){
@@ -82,7 +89,7 @@ function upload_file(file,table,sys_id){
 
 
   var body = {};
-  body[fields[table]] = fs.readFileSync('./dist/' + file).toString();
+  body[fields[table]] = fs.readFileSync(path + '/' + file).toString();
 
   if (table == 'sys_ui_page') {
 
